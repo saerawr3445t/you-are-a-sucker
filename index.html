@@ -1,0 +1,1344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>I'm a sucker.</title>
+  <meta name="description" content="A clothing brand for people who know better. And buy it anyway." />
+  <style>
+
+    /* âââââââââââââââââââââââââââââââââââââââââââââââââââ
+       RESET & TOKENS
+    âââââââââââââââââââââââââââââââââââââââââââââââââââ */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --black:      #0f0f0f;
+      --white:      #ffffff;
+      --off-white:  #fafafa;
+      --gray-light: #f2f2f2;
+      --gray-mid:   #dedede;
+      --gray-text:  #999999;
+      --gray-dark:  #444444;
+      --font: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      --max-w: 1100px;
+      --pad-x: 56px;
+      --pad-x-sm: 24px;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--font);
+      background: var(--white);
+      color: var(--black);
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    a { color: inherit; text-decoration: none; }
+    button { font-family: var(--font); cursor: pointer; }
+    img { display: block; max-width: 100%; }
+
+    /* âââââââââââââââââââââââââââââââââââââââââââââââââââ
+       UTILITIES
+    âââââââââââââââââââââââââââââââââââââââââââââââââââ */
+    .label {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--gray-text);
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 13px 34px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      border: 1.5px solid var(--black);
+      cursor: pointer;
+      transition: background 0.2s, color 0.2s;
+    }
+    .btn-dark  { background: var(--black); color: var(--white); }
+    .btn-dark:hover  { background: var(--white); color: var(--black); }
+    .btn-light { background: var(--white); color: var(--black); }
+    .btn-light:hover { background: var(--black); color: var(--white); }
+    .btn-white { background: var(--white); color: var(--black); border-color: var(--white); }
+    .btn-white:hover { background: transparent; color: var(--white); border-color: var(--white); }
+
+    /* scroll fade-in */
+    .fi {
+      opacity: 0;
+      transform: translateY(28px);
+      transition: opacity 0.65s ease, transform 0.65s ease;
+    }
+    .fi.visible { opacity: 1; transform: translateY(0); }
+    .fi-delay-1 { transition-delay: 0.1s; }
+    .fi-delay-2 { transition-delay: 0.2s; }
+    .fi-delay-3 { transition-delay: 0.3s; }
+    .fi-delay-4 { transition-delay: 0.4s; }
+
+    /* âââââââââââââââââââââââââââââââââââââââââââââââââââ
+       MARQUEE
+    âââââââââââââââââââââââââââââââââââââââââââââââââââ */
+    .marquee {
+      overflow: hidden;
+      background: var(--black);
+      padding: 16px 0;
+      white-space: nowrap;
+      border-top: 1px solid #1a1a1a;
+      border-bottom: 1px solid #1a1a1a;
+    }
+    .marquee-track {
+      display: inline-block;
+      animation: marquee-scroll 24s linear infinite;
+    }
+    .marquee-track.rev { animation-direction: reverse; animation-duration: 20s; }
+    .marquee-track i {
+      font-style: normal;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: #fff;
+      padding: 0 28px;
+    }
+    .marquee-track i.sep { color: #333; padding: 0; }
+
+    @keyframes marquee-scroll {
+      from { transform: translateX(0); }
+      to   { transform: translateX(-50%); }
+    }
+
+    /* âââââââââââââââââââââââââââââââââââââââââââââââââââ
+       NAV
+    âââââââââââââââââââââââââââââââââââââââââââââââââââ */
+    #nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 200;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 var(--pad-x);
+      height: 64px;
+      background: rgba(255,255,255,0.94);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--gray-mid);
+      transition: height 0.3s;
+    }
+
+    #nav.scrolled { height: 56px; }
+
+    .nav-logo {
+      font-size: 12px;
+      font-weight: 900;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+
+    .nav-center {
+      display: flex;
+      gap: 36px;
+      list-style: none;
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+    .nav-center a {
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--gray-text);
+      transition: color 0.2s;
+    }
+    .nav-center a:hover { color: var(--black); }
+
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+    }
+    .nav-right a {
+      font-size: 11px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--gray-text);
+      transition: color 0.2s;
+    }
+    .nav-right a:hover { color: var(--black); }
+
+    .nav-burger {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      background: none;
+      border: none;
+      padding: 4px;
+    }
+    .nav-burger span {
+      display: block;
+      width: 22px;
+      height: 1.5px;
+      background: var(--black);
+      transition: transform 0.3s, opacity 0.3s;
+      transform-origin: center;
+    }
+    .nav-burger.open span:nth-child(1) { transform: translateY(6.5px) rotate(45deg); }
+    .nav-burger.open span:nth-child(2) { opacity: 0; }
+    .nav-burger.open span:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
+
+    /* Mobile drawer */
+    .nav-drawer {
+      position: fixed;
+      top: 64px; left: 0; right: 0;
+      background: var(--white);
+      border-bottom: 1px solid var(--gray-mid);
+      z-index: 199;
+      padding: 0 var(--pad-x-sm);
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.4s ease, padding 0.3s;
+    }
+    .nav-drawer.open {
+      max-height: 340px;
+      padding: 28px var(--pad-x-sm);
+    }
+    .nav-drawer ul {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .nav-drawer li a {
+      display: block;
+      font-size: 22px;
+      font-weight: 800;
+      letter-spacing: -0.01em;
+      padding: 8px 0;
+      color: var(--black);
+      border-bottom: 1px solid var(--gray-light);
+    }
+    .nav-drawer li:last-child a { border-bottom: none; }
+
+    /* âââââââââââââââââââââââââââââââââââââââââââââââââââ
+       HERO
+    âââââââââââââââââââââââââââââââââââââââââââââââââââ */
+    #hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 100px var(--pad-x) 80px;
+      background: var(--white);
+      position: relative;
+      overflow: hidden;
+      text-align: center;
+    }
+
+    /* subtle grid background */
+    #hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(var(--gray-light) 1px, transparent 1px),
+        linear-gradient(90deg, var(--gray-light) 1px, transparent 1px);
+      background-size: 60px 60px;
+      opacity: 0.35;
+      pointer-events: none;
+    }
+
+    .hero-eyebrow {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.24em;
+      text-transform: uppercase;
+      color: var(--gray-text);
+      margin-bottom: 28px;
+      opacity: 0;
+      animation: fadeUp 0.7s ease forwards 0.05s;
+    }
+
+    .hero-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 18px;
+    }
+
+    .hero-jester {
+      font-size: clamp(56px, 9vw, 100px);
+      line-height: 1;
+      flex-shrink: 0;
+      animation: jester 3.5s ease-in-out infinite;
+      user-select: none;
+    }
+    @keyframes jester {
+      0%,100% { transform: rotate(-4deg) translateX(0); }
+      50%      { transform: rotate(0deg) translateX(5px); }
+    }
+
+    .hero-title {
+      font-size: clamp(52px, 9.5vw, 108px);
+      font-weight: 900;
+      line-height: 0.95;
+      letter-spacing: -0.035em;
+      opacity: 0;
+      animation: fadeUp 0.8s ease forwards 0.15s;
+    }
+
+    .hero-sub {
+      margin-top: 24px;
+      font-size: clamp(14px, 1.8vw, 18px);
+      color: var(--gray-text);
+      letter-spacing: 0.01em;
+      opacity: 0;
+      animation: fadeUp 0.8s ease forwards 0.35s;
+    }
+
+    .hero-actions {
+      margin-top: 44px;
+      display: flex;
+      gap: 14px;
+      justify-content: center;
+      flex-wrap: wrap;
+      opacity: 0;
+      animation: fadeUp 0.8s ease forwards 0.55s;
+    }
+
+    .hero-scroll {
+      position: absolute;
+      bottom: 36px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      opacity: 0;
+      animation: fadeUp 0.6s ease forwards 1s;
+    }
+    .hero-scroll span {
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--gray-mid);
+    }
+    .hero-scroll-line {
+      width: 1px;
+      height: 36px;
+      background: var(--gray-mid);
+      animation: scroll-pulse 2s ease-in-out infinite;
+    }
+    @keyframes scroll-pulse {
+      0%,100% { transform: scaleY(1); opacity: 0.4; }
+      50%      { transform: scaleY(0.5); opacity: 1; }
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* âââââââââââââââââââââââââââââââââââââââââââââââââââ
+       SHOP / COLLECTION (no products â placeholder)
+    âââââââââââââââââââââââââââââââââââââââââââââââââââ */
+    #shop {
+      padding: 110px var(--pad-x);
+      background: var(--off-white);
+    }
+
+    .shop-header {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      margin-bottom: 56px;
+    }
+
+    .shop-title {
+      font-size: clamp(32px, 5vw, 52px);
+      font-weight: 900;
+      letter-spacing: -0.025em;
+      line-height: 1;
+    }
+
+    .shop-count {
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--gray-text);
+      padding-bottom: 4px;
+    }
+
+    /* Filter bar */
+    .shop-filters {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 44px;
+      flex-wrap: wrap;
+    }
+    .filter-btn {
+      padding: 8px 18px;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      background: var(--white);
+      border: 1px solid var(--gray-mid);
+      color: var(--gray-text);
+      cursor: pointer;
+      transition: all 0.18s;
+    }
+    .filter-btn:hover,
+    .filter-btn.active {
+      background: var(--black);
+      border-color: var(--black);
+      color: var(--white);
+    }
+
+    /* Product grid skeleton */
+    .product-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2px;
+    }
+
+    .product-slot {
+      background: var(--white);
+      aspect-ratio: 3/4;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      position: relative;
+      overflow: hidden;
+      cursor: default;
+    }
+
+    /* Skeleton shimmer */
+    .product-slot::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        90deg,
+        transparent 0%,
+        rgba(255,255,255,0.6) 50%,
+        transparent 100%
+      );
+      background-size: 200% 100%;
+      animation: shimmer 2.4s ease-in-out infinite;
+    }
+    @keyframes shimmer {
+      0%   { background-position: -200% 0; }
+      100% { background-position:  200% 0; }
+    }
+
+    .slot-inner {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      z-index: 1;
+    }
+
+    .slot-icon {
+      font-size: 28px;
+      opacity: 0.18;
+    }
+
+    .slot-label {
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--gray-mid);
+    }
+
+    .slot-tag {
+      position: absolute;
+      top: 14px;
+      left: 14px;
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--gray-mid);
+      border: 1px solid var(--gray-mid);
+      padding: 4px 8px;
+      z-index: 1;
+    }
+
+    .shop-footnote {
+      margin-top: 36px;
+      text-align: center;
+      font-size: 12px;
+      color: var(--gray-text);
+      letter-spacing: 0.04em;
+    }
+    .shop-footnote a {
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+
+    /* âââââââââââââââââââââââââââââââââââââââââââââââââââ
+       MANIFESTO
+    âââââââââââââââââââââââââââââââââââââââââââââââââââ */
+    #manifesto {
+      background: var(--black);
+      color: var(--white);
+      padding: 130px var(--pad-x);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      min-height: 70vh;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .manifesto-inner {
+      max-width: 780px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .manifesto-quote {
+      font-size: clamp(36px, 6vw, 72px);
+      font-weight: 900;
+      line-height: 1.05;
+      letter-spacing: -0.03em;
+    }
+
+    .manifesto-quote em {
+      font-style: normal;
+      color: var(--gray-text);
+    }
+
+    .manifesto-sub {
+      margin-top: 36px;
+      font-size: 14px;
+      color: #666;
+      line-height: 1.8;
+      max-width: 480px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .manifesto-rule {
+      width: 1px;
+      height: 56px;
+      background: #333;
+      margin: 44px auto;
+    }
+
+    .manifesto-values {
+      display: flex;
+      justify-content: center;
+      gap: 48px;
+      flex-wrap: wrap;
+    }
+
+    .mval {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+    .mval-num {
+      font-size: 28px;
+      font-weight: 900;
+      letter-spacing: -0.02em;
+    }
+    .mval-label {
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: #555;
+    }
+
+    /* âââââââââââââââââââââââââââââââââââââââââââââââââââ
+       ABOUT
+    âââââââââââââââââââââââââââââââââââââââââââââââââââ */
+    #about {
+      padding: 120px var(--pad-x);
+      background: var(--white);
+    }
+
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 96px;
+      align-items: start;
+      max-width: var(--max-w);
+    }
+
+    .about-left {}
+
+    .about-title {
+      font-size: clamp(36px, 5vw, 58px);
+      font-weight: 900;
+      letter-spacing: -0.025em;
+      line-height: 1.05;
+      margin-top: 20px;
+      margin-bottom: 36px;
+    }
+
+    .about-body {
+      font-size: 15px;
+      line-height: 1.85;
+      color: var(--gray-dark);
+    }
+    .about-body p + p { margin-top: 18px; }
+
+    .about-sig {
+      margin-top: 44px;
+      padding-top: 24px;
+      border-top: 1px solid var(--gray-mid);
+      font-size: 12px;
+      color: var(--gray-text);
+      letter-spacing: 0.06em;
+    }
+    .about-sig strong {
+      display: block;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--black);
+      margin-bottom: 4px;
+    }
+
+    .about-right {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .about-pillar {
+      padding: 28px 0;
+      border-top: 1px solid var(--gray-mid);
+    }
+    .about-pillar:last-child { border-bottom: 1px solid var(--gray-mid); }
+
+    .pillar-num {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.16em;
+      color: var(--gray-mid);
+      margin-bottom: 10px;
+    }
+
+    .pillar-title {
+      font-size: 18px;
+      font-weight: 800;
+      letter-spacing: -0.01em;
+      margin-bottom: 8px;
+    }
+
+    .pillar-text {
+      font-size: 13px;
+      line-height: 1.7;
+      color: var(--gray-text);
+    }
+
+    /* âââââââââââââââââââââââââââââââââââââââââââââââââââ
+       PRESS / SOCIAL PROOF (empty base)
+    âââââââââââââââââââââââââââââââââââââââââââââââââââ */
+    #press {
+      background: var(--gray-light);
+      padding: 72px var(--pad-x);
+      text-align: center;
+    }
+
+    .press-label {
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--gray-text);
+      margin-bottom: 36px;
+    }
+
+    .press-logos {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 48px;
+      flex-wrap: wrap;
+    }
+
+    .press-slot {
+      height: 20px;
+      width: 90px;
+      background: var(--gray-mid);
+      border-radius: 2px;
+      opacity: 0.4;
+    }
+
+    /* âââââââââââââââââââââââââââââââââââââââââââââââââââ
+       NEWSLETTER
+    âââââââââââââââââââââââââââââââââââââââââââââââââââ */
+    #newsletter {
+      background: var(--black);
+      color: var(--white);
+      padding: 96px var(--pad-x);
+      text-align: center;
+    }
+
+    .nl-title {
+      font-size: clamp(28px, 4vw, 48px);
+      font-weight: 900;
+      letter-spacing: -0.025em;
+      line-height: 1.05;
+      margin-bottom: 12px;
+    }
+
+    .nl-sub {
+      font-size: 14px;
+      color: #666;
+      margin-bottom: 40px;
+      letter-spacing: 0.01em;
+    }
+
+    .nl-form {
+      display: flex;
+      max-width: 440px;
+      margin: 0 auto;
+      gap: 0;
+    }
+
+    .nl-input {
+      flex: 1;
+      height: 48px;
+      padding: 0 18px;
+      font-family: var(--font);
+      font-size: 13px;
+      background: #1a1a1a;
+      border: 1px solid #2a2a2a;
+      border-right: none;
+      color: var(--white);
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .nl-input::placeholder { color: #555; }
+    .nl-input:focus { border-color: #555; }
+
+    .nl-submit {
+      height: 48px;
+      padding: 0 24px;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      background: var(--white);
+      color: var(--black);
+      border: 1px solid var(--white);
+      cursor: pointer;
+      transition: background 0.2s, color 0.2s;
+      white-space: nowrap;
+    }
+    .nl-submit:hover { background: transparent; color: var(--white); }
+
+    .nl-fine {
+      margin-top: 16px;
+      font-size: 10px;
+      color: #444;
+      letter-spacing: 0.04em;
+    }
+
+    /* âââââââââââââââââââââââââââââââââââââââââââââââââââ
+       FOOTER
+    âââââââââââââââââââââââââââââââââââââââââââââââââââ */
+    footer {
+      background: var(--black);
+      color: var(--white);
+      border-top: 1px solid #1c1c1c;
+    }
+
+    .footer-main {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr 1fr;
+      gap: 56px;
+      padding: 72px var(--pad-x) 56px;
+    }
+
+    .footer-brand {}
+    .footer-brand-logo {
+      font-size: 16px;
+      font-weight: 900;
+      letter-spacing: -0.01em;
+      margin-bottom: 14px;
+    }
+    .footer-brand-desc {
+      font-size: 12px;
+      line-height: 1.7;
+      color: #555;
+      max-width: 240px;
+      margin-bottom: 24px;
+    }
+    .footer-socials {
+      display: flex;
+      gap: 14px;
+    }
+    .social-link {
+      width: 32px;
+      height: 32px;
+      border: 1px solid #2a2a2a;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      color: #555;
+      transition: border-color 0.2s, color 0.2s;
+    }
+    .social-link:hover { border-color: #666; color: var(--white); }
+
+    .footer-col-head {
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: #444;
+      margin-bottom: 20px;
+    }
+
+    .footer-col-links {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .footer-col-links a {
+      font-size: 12px;
+      color: #666;
+      transition: color 0.2s;
+    }
+    .footer-col-links a:hover { color: var(--white); }
+
+    .footer-bottom {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 24px var(--pad-x);
+      border-top: 1px solid #1a1a1a;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    .footer-copy {
+      font-size: 10px;
+      color: #3a3a3a;
+      letter-spacing: 0.04em;
+    }
+    .footer-legal {
+      display: flex;
+      gap: 20px;
+    }
+    .footer-legal a {
+      font-size: 10px;
+      color: #3a3a3a;
+      letter-spacing: 0.04em;
+      transition: color 0.2s;
+    }
+    .footer-legal a:hover { color: #666; }
+    .footer-motto {
+      font-size: 10px;
+      color: #252525;
+      letter-spacing: 0.04em;
+      font-style: italic;
+    }
+
+    /* âââââââââââââââââââââââââââââââââââââââââââââââââââ
+       TOAST
+    âââââââââââââââââââââââââââââââââââââââââââââââââââ */
+    #toast {
+      position: fixed;
+      bottom: 28px;
+      right: 28px;
+      background: var(--black);
+      color: var(--white);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      padding: 14px 22px;
+      border: 1px solid #2a2a2a;
+      z-index: 999;
+      opacity: 0;
+      transform: translateY(10px);
+      transition: opacity 0.25s, transform 0.25s;
+      pointer-events: none;
+      max-width: 300px;
+    }
+    #toast.show { opacity: 1; transform: translateY(0); }
+
+    /* âââââââââââââââââââââââââââââââââââââââââââââââââââ
+       RESPONSIVE
+    âââââââââââââââââââââââââââââââââââââââââââââââââââ */
+    @media (max-width: 900px) {
+      :root { --pad-x: 32px; }
+
+      .product-grid { grid-template-columns: repeat(2, 1fr); }
+      .product-slot:last-child { display: none; }
+
+      .about-grid { grid-template-columns: 1fr; gap: 56px; }
+
+      .footer-main { grid-template-columns: 1fr 1fr; gap: 40px; }
+      .footer-brand { grid-column: 1 / -1; }
+    }
+
+    @media (max-width: 640px) {
+      :root { --pad-x: var(--pad-x-sm); }
+
+      #nav { padding: 0 var(--pad-x-sm); }
+      .nav-center { display: none; }
+      .nav-right .nav-link-hide { display: none; }
+      .nav-burger { display: flex; }
+
+      #hero { padding: 100px var(--pad-x-sm) 80px; }
+      .hero-row { flex-direction: column-reverse; gap: 8px; }
+      .hero-jester { font-size: 52px; animation: none; }
+
+      #shop, #manifesto, #about, #newsletter, #press { padding-left: var(--pad-x-sm); padding-right: var(--pad-x-sm); }
+
+      .shop-header { flex-direction: column; align-items: flex-start; gap: 12px; }
+      .product-grid { grid-template-columns: 1fr 1fr; gap: 2px; }
+
+      .manifesto-values { gap: 28px; }
+
+      .nl-form { flex-direction: column; }
+      .nl-input { border-right: 1px solid #2a2a2a; border-bottom: none; }
+      .nl-submit { height: 44px; }
+
+      .footer-main { grid-template-columns: 1fr; gap: 32px; padding: 48px var(--pad-x-sm); }
+      .footer-brand { grid-column: auto; }
+      .footer-bottom { flex-direction: column; align-items: flex-start; gap: 8px; padding: 20px var(--pad-x-sm); }
+      .footer-legal { flex-wrap: wrap; gap: 12px; }
+
+      #toast { right: 12px; left: 12px; bottom: 16px; }
+    }
+
+  </style>
+</head>
+<body>
+
+<!-- ââââââââââââââââââââââââââââââââââââââââââ
+     NAV
+ââââââââââââââââââââââââââââââââââââââââââ -->
+<nav id="nav">
+  <a class="nav-logo" href="#">I'm a sucker.</a>
+
+  <ul class="nav-center" aria-label="Main navigation">
+    <li><a href="#shop">Shop</a></li>
+    <li><a href="#about">About</a></li>
+    <li><a href="#newsletter">Contact</a></li>
+  </ul>
+
+  <div class="nav-right">
+    <a href="#newsletter" class="nav-link-hide">Newsletter</a>
+    <a href="#" onclick="cartClick(event)">Cart (0)</a>
+    <button class="nav-burger" id="burger" aria-label="Toggle menu" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<!-- Mobile drawer -->
+<div class="nav-drawer" id="drawer" aria-hidden="true">
+  <ul>
+    <li><a href="#shop"       onclick="closeDrawer()">Shop</a></li>
+    <li><a href="#about"      onclick="closeDrawer()">About</a></li>
+    <li><a href="#newsletter" onclick="closeDrawer()">Newsletter</a></li>
+    <li><a href="#"           onclick="closeDrawer()">Contact</a></li>
+  </ul>
+</div>
+
+
+<!-- ââââââââââââââââââââââââââââââââââââââââââ
+     HERO
+ââââââââââââââââââââââââââââââââââââââââââ -->
+<section id="hero">
+  <p class="hero-eyebrow">Est. Now &nbsp;Â·&nbsp; One product &nbsp;Â·&nbsp; No excuses</p>
+
+  <div class="hero-row">
+    <span class="hero-jester" aria-hidden="true">ð¤¡</span>
+    <h1 class="hero-title">I'm a sucker.</h1>
+  </div>
+
+  <p class="hero-sub">I paid $100 for the shirt. So will you.</p>
+
+  <div class="hero-actions">
+    <a href="#shop" class="btn btn-dark">Shop the collection</a>
+    <a href="#about" class="btn btn-light">Why though?</a>
+  </div>
+
+  <div class="hero-scroll" aria-hidden="true">
+    <span>Scroll</span>
+    <div class="hero-scroll-line"></div>
+  </div>
+</section>
+
+
+<!-- ââââââââââââââââââââââââââââââââââââââââââ
+     MARQUEE 1
+ââââââââââââââââââââââââââââââââââââââââââ -->
+<div class="marquee" aria-hidden="true">
+  <div class="marquee-track">
+    <i>Premium Cotton</i><i class="sep">Â·</i>
+    <i>Overpriced by Design</i><i class="sep">Â·</i>
+    <i>Ethically Ambiguous</i><i class="sep">Â·</i>
+    <i>Washed Once, Probably</i><i class="sep">Â·</i>
+    <i>You Still Bought It</i><i class="sep">Â·</i>
+    <i>Minimal Effort, Maximum Price</i><i class="sep">Â·</i>
+    <i>Premium Cotton</i><i class="sep">Â·</i>
+    <i>Overpriced by Design</i><i class="sep">Â·</i>
+    <i>Ethically Ambiguous</i><i class="sep">Â·</i>
+    <i>Washed Once, Probably</i><i class="sep">Â·</i>
+    <i>You Still Bought It</i><i class="sep">Â·</i>
+    <i>Minimal Effort, Maximum Price</i><i class="sep">Â·</i>
+  </div>
+</div>
+
+
+<!-- ââââââââââââââââââââââââââââââââââââââââââ
+     SHOP
+ââââââââââââââââââââââââââââââââââââââââââ -->
+<section id="shop">
+  <div class="shop-header fi">
+    <div>
+      <p class="label" style="margin-bottom:12px;">The Collection</p>
+      <h2 class="shop-title">Coming.<br>Eventually.</h2>
+    </div>
+    <span class="shop-count">0 products Â· for now</span>
+  </div>
+
+  <div class="shop-filters fi fi-delay-1">
+    <button class="filter-btn active" onclick="setFilter(this)">All</button>
+    <button class="filter-btn" onclick="setFilter(this)">Tops</button>
+    <button class="filter-btn" onclick="setFilter(this)">Bottoms</button>
+    <button class="filter-btn" onclick="setFilter(this)">Accessories</button>
+    <button class="filter-btn" onclick="setFilter(this)">Sale (lol)</button>
+  </div>
+
+  <div class="product-grid fi fi-delay-2">
+    <div class="product-slot">
+      <span class="slot-tag">Dropping soon</span>
+      <div class="slot-inner">
+        <span class="slot-icon">ð</span>
+        <span class="slot-label">Product #001</span>
+      </div>
+    </div>
+    <div class="product-slot">
+      <span class="slot-tag">Dropping soon</span>
+      <div class="slot-inner">
+        <span class="slot-icon">ð§¢</span>
+        <span class="slot-label">Product #002</span>
+      </div>
+    </div>
+    <div class="product-slot">
+      <span class="slot-tag">Dropping soon</span>
+      <div class="slot-inner">
+        <span class="slot-icon">ð§¥</span>
+        <span class="slot-label">Product #003</span>
+      </div>
+    </div>
+  </div>
+
+  <p class="shop-footnote fi fi-delay-3">
+    Products are coming. Patience is free. Unlike anything else we sell.
+    <br><a href="#newsletter">Get notified when we drop.</a>
+  </p>
+</section>
+
+
+<!-- ââââââââââââââââââââââââââââââââââââââââââ
+     MANIFESTO
+ââââââââââââââââââââââââââââââââââââââââââ -->
+<section id="manifesto">
+  <div class="manifesto-inner">
+    <blockquote class="manifesto-quote fi">
+      "At least we're<br>
+      <em>honest about it.</em>"
+    </blockquote>
+
+    <p class="manifesto-sub fi fi-delay-1">
+      Every other brand has a story about purpose, community,
+      and sustainable futures. We make clothes. They cost money.
+      You decide if that's enough.
+    </p>
+
+    <div class="manifesto-rule fi fi-delay-2"></div>
+
+    <div class="manifesto-values fi fi-delay-3">
+      <div class="mval">
+        <span class="mval-num">$100</span>
+        <span class="mval-label">Starting price</span>
+      </div>
+      <div class="mval">
+        <span class="mval-num">1</span>
+        <span class="mval-label">Excuse given</span>
+      </div>
+      <div class="mval">
+        <span class="mval-num">0</span>
+        <span class="mval-label">Apologies</span>
+      </div>
+      <div class="mval">
+        <span class="mval-num">â</span>
+        <span class="mval-label">Audacity</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ââââââââââââââââââââââââââââââââââââââââââ
+     ABOUT
+ââââââââââââââââââââââââââââââââââââââââââ -->
+<section id="about">
+  <div class="about-grid">
+    <div class="about-left fi">
+      <p class="label">About the brand</p>
+      <h2 class="about-title">We make clothes.<br>You buy them.<br>Simple.</h2>
+      <div class="about-body">
+        <p>
+          I'm a sucker started because someone had to.
+          We make one thing: clothing that costs too much and says exactly that.
+          No mission statement. No founder story about a trip to Bali.
+          No charity tie-in. Just fabric with an honest price tag.
+        </p>
+        <p>
+          The name isn't an insult. It's a mirror.
+          You know what you're doing. So do we.
+          And somehow that makes it better.
+        </p>
+        <p>
+          We're building a small collection, slowly, without urgency.
+          Because hype is exhausting and we'd rather just make good things.
+        </p>
+      </div>
+      <div class="about-sig">
+        <strong>I'm a sucker.</strong>
+        Honesty. Reluctantly. Since now.
+      </div>
+    </div>
+
+    <div class="about-right fi fi-delay-2">
+      <div class="about-pillar">
+        <p class="pillar-num">01</p>
+        <p class="pillar-title">Transparent pricing.</p>
+        <p class="pillar-text">It costs what it costs. No fake sales, no inflated "original" prices, no psychological games. Just a number.</p>
+      </div>
+      <div class="about-pillar">
+        <p class="pillar-num">02</p>
+        <p class="pillar-title">No brand values.</p>
+        <p class="pillar-text">We don't have a manifesto about saving the planet. We have a shirt. If that's enough for you, great.</p>
+      </div>
+      <div class="about-pillar">
+        <p class="pillar-num">03</p>
+        <p class="pillar-title">Small by design.</p>
+        <p class="pillar-text">We're not scaling. We're making a few things we like, selling them to people we assume are adults.</p>
+      </div>
+      <div class="about-pillar">
+        <p class="pillar-num">04</p>
+        <p class="pillar-title">No FOMO.</p>
+        <p class="pillar-text">We won't tell you it's limited edition. Maybe it is. Maybe it isn't. You'll live either way.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ââââââââââââââââââââââââââââââââââââââââââ
+     PRESS (placeholder)
+ââââââââââââââââââââââââââââââââââââââââââ -->
+<div id="press">
+  <p class="press-label fi">As not seen in</p>
+  <div class="press-logos fi fi-delay-1">
+    <div class="press-slot"></div>
+    <div class="press-slot"></div>
+    <div class="press-slot"></div>
+    <div class="press-slot"></div>
+    <div class="press-slot"></div>
+  </div>
+</div>
+
+
+<!-- ââââââââââââââââââââââââââââââââââââââââââ
+     MARQUEE 2
+ââââââââââââââââââââââââââââââââââââââââââ -->
+<div class="marquee" aria-hidden="true">
+  <div class="marquee-track rev">
+    <i>Thank You For Your Interest</i><i class="sep">Â·</i>
+    <i>Please Don't Ask For A Refund</i><i class="sep">Â·</i>
+    <i>We Appreciate Your Gullibility</i><i class="sep">Â·</i>
+    <i>Tell Your Friends. Or Don't.</i><i class="sep">Â·</i>
+    <i>You Look Great, Actually</i><i class="sep">Â·</i>
+    <i>Thank You For Your Interest</i><i class="sep">Â·</i>
+    <i>Please Don't Ask For A Refund</i><i class="sep">Â·</i>
+    <i>We Appreciate Your Gullibility</i><i class="sep">Â·</i>
+    <i>Tell Your Friends. Or Don't.</i><i class="sep">Â·</i>
+    <i>You Look Great, Actually</i><i class="sep">Â·</i>
+  </div>
+</div>
+
+
+<!-- ââââââââââââââââââââââââââââââââââââââââââ
+     NEWSLETTER
+ââââââââââââââââââââââââââââââââââââââââââ -->
+<section id="newsletter">
+  <div class="fi">
+    <p class="label" style="color:#555; margin-bottom:20px;">Stay uninformed</p>
+    <h2 class="nl-title">Get the email<br>nobody asked for.</h2>
+    <p class="nl-sub">We'll tell you when we drop something. That's it. No weekly inspiration.<br>No "tips for a better wardrobe." Just a link and a price.</p>
+    <form class="nl-form" onsubmit="nlSubmit(event)">
+      <input class="nl-input" type="email" placeholder="your@email.com" required />
+      <button class="nl-submit" type="submit">Sign up</button>
+    </form>
+    <p class="nl-fine">By subscribing you agree that you are, in fact, a sucker. Unsubscribe anytime.</p>
+  </div>
+</section>
+
+
+<!-- ââââââââââââââââââââââââââââââââââââââââââ
+     FOOTER
+ââââââââââââââââââââââââââââââââââââââââââ -->
+<footer>
+  <div class="footer-main">
+    <div class="footer-brand">
+      <p class="footer-brand-logo">I'm a sucker.</p>
+      <p class="footer-brand-desc">
+        A clothing brand for people who know exactly what they're doing
+        and do it anyway. Based somewhere. Shipping elsewhere.
+      </p>
+      <div class="footer-socials">
+        <a href="#" class="social-link" aria-label="Instagram">IG</a>
+        <a href="#" class="social-link" aria-label="Twitter / X">ð</a>
+        <a href="#" class="social-link" aria-label="TikTok">TK</a>
+      </div>
+    </div>
+
+    <div>
+      <p class="footer-col-head">Shop</p>
+      <ul class="footer-col-links">
+        <li><a href="#shop">The Collection</a></li>
+        <li><a href="#">New Arrivals</a></li>
+        <li><a href="#">Gift Cards (for enemies)</a></li>
+        <li><a href="#">Coming Soon</a></li>
+      </ul>
+    </div>
+
+    <div>
+      <p class="footer-col-head">Help</p>
+      <ul class="footer-col-links">
+        <li><a href="#">FAQ</a></li>
+        <li><a href="#">Shipping</a></li>
+        <li><a href="#">Returns (Good Luck)</a></li>
+        <li><a href="#">Size Guide</a></li>
+        <li><a href="#">Contact</a></li>
+      </ul>
+    </div>
+
+    <div>
+      <p class="footer-col-head">Brand</p>
+      <ul class="footer-col-links">
+        <li><a href="#about">About</a></li>
+        <li><a href="#">Stockists</a></li>
+        <li><a href="#">Press</a></li>
+        <li><a href="#">Careers (none)</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="footer-bottom">
+    <p class="footer-copy">Â© 2026 I'm a sucker. All rights reserved, including the right to remain overpriced.</p>
+    <div class="footer-legal">
+      <a href="#">Privacy Policy</a>
+      <a href="#">Terms</a>
+      <a href="#">Cookie Settings</a>
+    </div>
+    <p class="footer-motto">You didn't have to. And yet.</p>
+  </div>
+</footer>
+
+
+<!-- Toast -->
+<div id="toast" role="status" aria-live="polite"></div>
+
+
+<!-- ââââââââââââââââââââââââââââââââââââââââââ
+     JAVASCRIPT
+ââââââââââââââââââââââââââââââââââââââââââ -->
+<script>
+  /* ââ Scroll fade-in ââââââââââââââââââââââââââââââââ */
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+  }, { threshold: 0.08 });
+  document.querySelectorAll('.fi').forEach(el => io.observe(el));
+
+  /* ââ Nav shrink on scroll ââââââââââââââââââââââââââ */
+  const nav = document.getElementById('nav');
+  window.addEventListener('scroll', () => {
+    nav.classList.toggle('scrolled', window.scrollY > 80);
+  }, { passive: true });
+
+  /* ââ Mobile hamburger ââââââââââââââââââââââââââââââ */
+  const burger  = document.getElementById('burger');
+  const drawer  = document.getElementById('drawer');
+  burger.addEventListener('click', () => {
+    const open = burger.classList.toggle('open');
+    drawer.classList.toggle('open', open);
+    burger.setAttribute('aria-expanded', open);
+    drawer.setAttribute('aria-hidden', !open);
+    document.body.style.overflow = open ? 'hidden' : '';
+  });
+  function closeDrawer() {
+    burger.classList.remove('open');
+    drawer.classList.remove('open');
+    burger.setAttribute('aria-expanded', 'false');
+    drawer.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+  }
+
+  /* ââ Filter buttons ââââââââââââââââââââââââââââââââ */
+  function setFilter(btn) {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    showToast('No products in that category yet. Patience.');
+  }
+
+  /* ââ Cart click ââââââââââââââââââââââââââââââââââââ */
+  function cartClick(e) {
+    e.preventDefault();
+    showToast('Your cart is empty. Obviously.');
+  }
+
+  /* ââ Newsletter submit âââââââââââââââââââââââââââââ */
+  function nlSubmit(e) {
+    e.preventDefault();
+    const input = e.target.querySelector('input');
+    showToast('Subscribed. We'll be in touch. Unfortunately.');
+    input.value = '';
+  }
+
+  /* ââ Toast âââââââââââââââââââââââââââââââââââââââââ */
+  let toastTimer;
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => t.classList.remove('show'), 3200);
+  }
+</script>
+
+</body>
+</html>
