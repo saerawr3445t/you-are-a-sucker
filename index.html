@@ -135,10 +135,27 @@
     #nav.scrolled { height: 56px; }
 
     .nav-logo {
-      font-size: 12px;
-      font-weight: 900;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
+      line-height: 1;
+      display: flex;
+      align-items: center;
+    }
+    .nav-logo svg {
+      height: 30px;
+      width: auto;
+      display: block;
+    }
+
+    /* ââ Hero logo SVG âââââââââââââââââââââââââââ */
+    .hero-logo-wrap {
+      display: flex;
+      justify-content: center;
+      opacity: 0;
+      animation: fadeUp 0.8s ease forwards 0.1s;
+    }
+    .hero-logo-svg {
+      width: 100%;
+      max-width: 640px;
+      height: auto;
     }
 
     .nav-center {
@@ -935,7 +952,13 @@
      NAV
 ââââââââââââââââââââââââââââââââââââââââââ -->
 <nav id="nav">
-  <a class="nav-logo" href="#">I'm a sucker.</a>
+  <a class="nav-logo" href="#" aria-label="I'm a sucker. â Home">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 310 46" aria-hidden="true">
+      <rect width="6" height="46" fill="#0f0f0f"/>
+      <text x="13" y="35" font-family="'Helvetica Neue',Arial,sans-serif" font-weight="900" font-size="30" fill="#0f0f0f" letter-spacing="-0.5">I'm a sucker.</text>
+      <text x="260" y="40" font-size="32">ð¤¡</text>
+    </svg>
+  </a>
 
   <ul class="nav-center" aria-label="Main navigation">
     <li><a href="#shop">Shop</a></li>
@@ -969,9 +992,12 @@
 <section id="hero">
   <p class="hero-eyebrow">Est. Now &nbsp;Â·&nbsp; One product &nbsp;Â·&nbsp; No excuses</p>
 
-  <div class="hero-row">
-    <span class="hero-jester" aria-hidden="true">ð¤¡</span>
-    <h1 class="hero-title">I'm a sucker.</h1>
+  <div class="hero-logo-wrap">
+    <svg class="hero-logo-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 108" role="img" aria-label="I'm a sucker.">
+      <rect width="8" height="108" fill="#0f0f0f"/>
+      <text x="24" y="80" font-family="'Helvetica Neue',Arial,sans-serif" font-weight="900" font-size="64" fill="#0f0f0f" letter-spacing="-1.5">I'm a sucker.</text>
+      <text x="442" y="96" font-size="72">ð¤¡</text>
+    </svg>
   </div>
 
   <p class="hero-sub">I paid $100 for the shirt. So will you.</p>
